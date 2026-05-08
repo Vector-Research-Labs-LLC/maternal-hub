@@ -5,7 +5,7 @@ import { BrainDump } from "@/components/BrainDump";
 import { BioBoundary } from "@/components/BioBoundary";
 import { Brain, HeartPulse } from "lucide-react";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "Motherboard — Calm command center for moms" },
