@@ -14,7 +14,131 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      battery_logs: {
+        Row: {
+          heart_rate: number | null
+          hydration_pct: number | null
+          id: string
+          level: number
+          note: string | null
+          recorded_at: string
+          sleep_hours: number | null
+          user_id: string
+        }
+        Insert: {
+          heart_rate?: number | null
+          hydration_pct?: number | null
+          id?: string
+          level: number
+          note?: string | null
+          recorded_at?: string
+          sleep_hours?: number | null
+          user_id: string
+        }
+        Update: {
+          heart_rate?: number | null
+          hydration_pct?: number | null
+          id?: string
+          level?: number
+          note?: string | null
+          recorded_at?: string
+          sleep_hours?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dump_items: {
+        Row: {
+          category: Database["public"]["Enums"]["dump_category"]
+          content: string
+          created_at: string
+          done: boolean
+          due_date: string | null
+          dump_id: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["dump_category"]
+          content: string
+          created_at?: string
+          done?: boolean
+          due_date?: string | null
+          dump_id?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["dump_category"]
+          content?: string
+          created_at?: string
+          done?: boolean
+          due_date?: string | null
+          dump_id?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dump_items_dump_id_fkey"
+            columns: ["dump_id"]
+            isOneToOne: false
+            referencedRelation: "dumps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dumps: {
+        Row: {
+          created_at: string
+          id: string
+          raw_transcript: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          raw_transcript: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          raw_transcript?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          onboarded: boolean
+          partner_name: string | null
+          partner_phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          onboarded?: boolean
+          partner_name?: string | null
+          partner_phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          onboarded?: boolean
+          partner_name?: string | null
+          partner_phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +147,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      dump_category: "groceries" | "deadlines" | "actions" | "partner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +274,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      dump_category: ["groceries", "deadlines", "actions", "partner"],
+    },
   },
 } as const
