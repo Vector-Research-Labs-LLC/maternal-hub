@@ -1,11 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrainDump } from "@/components/BrainDump";
 import { BioBoundary } from "@/components/BioBoundary";
-import { Brain, HeartPulse } from "lucide-react";
+import { Brain, HeartPulse, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "Motherboard — Calm command center for moms" },
@@ -26,6 +29,22 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [tab, setTab] = useState("braindump");
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const [displayName, setDisplayName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("display_name, onboarded")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        setDisplayName(data?.display_name ?? null);
+        if (data && !data.onboarded) navigate({ to: "/onboarding" });
+      });
+  }, [user, navigate]);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4 pt-8 pb-28">
@@ -35,12 +54,18 @@ function Index() {
             Motherboard
           </p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-            Hey, mama 💛
+            Hey, {displayName || "mama"} 💛
           </h1>
         </div>
-        <div className="glass flex h-11 w-11 items-center justify-center rounded-full">
-          <span className="text-base">🌸</span>
-        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={signOut}
+          aria-label="Sign out"
+          className="glass h-11 w-11 rounded-full"
+        >
+          <LogOut className="h-4 w-4" />
+        </Button>
       </header>
 
       <Tabs value={tab} onValueChange={setTab} className="flex-1">
